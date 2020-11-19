@@ -1,1 +1,212 @@
-hello
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <title></title>
+    <style>
+    #myCanvas {
+        background: "#ffffff";
+        border-style: solid;
+    }
+    </style>
+</head>
+
+<body translate="no">
+    <canvas id="myCanvas" width="2000" height="400">
+        Your browser does not support canvas
+    </canvas>
+    <script>
+	var context, controller, rectangle, obstacle, obstacle2, loop, Score;
+
+	context = document.querySelector("canvas").getContext("2d");
+
+	context.canvas.height = 500;
+	context.canvas.width = 1000;
+
+	Score = 0
+
+	end = 0
+
+	rectangle = {
+
+		height:32,
+		jumping:true,
+		width:32,
+		x:160,
+		x_velocity:0,
+		y:72,
+		y_velocity:0,
+	};
+
+	obstacle = {
+
+		height:32,
+		width:32,
+		x:1000,
+		y:429,
+		speed:5,
+	};
+
+	obstacle2 = {
+
+		height:32,
+		width:32,
+		x:500,
+		y:429,
+		speed:3,
+	};
+
+	controller = {
+		left:false,
+		right:false,
+		up:false,
+		keyListener:function(event){
+			var key_state = (event.type == "keydown")?true:false;
+
+			switch(event.keyCode) {
+				case 37:
+					controller.left = key_state;
+				break;
+
+				case 38:
+					controller.up = key_state;
+				break;
+
+				case 39:
+					controller.right = key_state;
+				break;
+
+			}
+		}
+	};
+
+	function GameScore(){
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		ctx.font = "30px Arial";
+		ctx.fillText(Score, 10, 50);
+	}
+
+	function GameEnd(){
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		ctx.font = "30px Arial";
+		ctx.fillText("Game Over", 30, 250);
+		GameEnd()
+
+	}
+
+
+	loop = function() {
+
+		obstacle.x = obstacle.x - obstacle.speed;
+		obstacle2.x = obstacle2.x + obstacle2.speed;
+
+		if (controller.left){
+			rectangle .x_velocity -= 0.5;
+		}
+
+		if (controller.right){
+			rectangle.x_velocity += 0.5;
+		}
+
+
+		if (controller.up && rectangle.jumping == false){
+			rectangle.y_velocity -= 30;
+			rectangle.jumping = true;
+
+		}
+
+		rectangle.y_velocity += 1.5;
+  		rectangle.x += rectangle.x_velocity;
+  		rectangle.y += rectangle.y_velocity;
+  		rectangle.x_velocity *= 0.9;
+  		rectangle.y_velocity *= 0.9;
+
+
+  		if (rectangle.y > 480 - 16 - 32) {
+    		rectangle.jumping = false;
+   		 rectangle.y = 480 - 16 - 32;
+   		 rectangle.y_velocity = 0;
+
+ 		 }
+
+
+  		context.fillStyle = "#202020";
+  		context.fillRect(0, 0, 1000, 500);
+
+  		context.fillStyle = "#ff0000";
+  		context.beginPath();
+  		context.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+  		context.fill();
+
+  		context.strokeStyle = "#00ff33";
+  		context.lineWidth = 6;
+  		context.beginPath();
+  		context.moveTo(0, 464);
+  		context.lineTo(1000, 464);
+  		context.stroke();
+
+  		context.fillStyle = "#007bff";
+  		context.beginPath();
+  		context.rect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+  		context.fill();
+
+  		context.fillStyle = "#007bff";
+  		context.beginPath();
+  		context.rect(obstacle2.x, obstacle2.y, obstacle2.width, obstacle2.height);
+  		context.fill();
+
+
+		if (rectangle.x > 1000){
+
+			rectangle.x = -rectangle.width;
+
+		}
+
+		if (rectangle.x < -rectangle.width){
+			rectangle.x = 1000
+		}
+
+		if (obstacle2.x > 1000){
+			obstacle2.width = Math.floor(Math.random() * 30) + 27
+			obstacle2.x = -obstacle2.width;
+			obstacle2.speed += 0.25
+		}
+
+
+		if (obstacle.x < -obstacle.width){
+			obstacle.width = Math.floor(Math.random() * 30) + 27
+			obstacle.x = 1000
+			obstacle.speed += 0.25
+
+		};
+
+		if (rectangle.jumping == false && rectangle.x - obstacle.x > 0 && rectangle.x - obstacle.x < obstacle.width){
+			GameEnd()
+		};
+		if (rectangle.jumping == false && rectangle.x - obstacle2.x > 0 && rectangle.x - obstacle2.x < obstacle2.width){
+			GameEnd()
+		};
+		
+
+		
+
+		Score ++ 
+
+		GameScore()
+
+			window.requestAnimationFrame(loop);
+	};
+
+	
+	window.addEventListener("keydown", controller.keyListener);
+	window.addEventListener("keyup", controller.keyListener);
+	window.requestAnimationFrame(loop);
+
+    </script>
+</body>
+
+
+
