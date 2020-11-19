@@ -93,6 +93,7 @@
 		var ctx = canvas.getContext("2d");
 		ctx.font = "30px Arial";
 		ctx.fillText("Game Over", 30, 250);
+		ctx.fillText(Score, 10, 50);
 		GameEnd()
 
 	}
@@ -183,7 +184,7 @@
 
 		};
 
-		if (rectangle.jumping == false && rectangle.x - obstacle.x > 0 && rectangle.x - obstacle.x < obstacle.width){
+		if (rectangle.jumping == false && rectangle.x - obstacle.x > - obstacle.width && rectangle.x - obstacle.x < 0){
 			GameEnd()
 		};
 		if (rectangle.jumping == false && rectangle.x - obstacle2.x > 0 && rectangle.x - obstacle2.x < obstacle2.width){
